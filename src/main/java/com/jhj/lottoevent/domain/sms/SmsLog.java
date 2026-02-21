@@ -35,4 +35,11 @@ public class SmsLog {
 
     @Column(name = "sent_at", nullable = false)
     private LocalDateTime sentAt = LocalDateTime.now();
+
+    public void setEvent(Event event) { this.event = event; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public void setType(String type) { this.type = type; }
+    public void setMessage(String message) { this.message = message; }
+    public void setStatus(String status) { this.status = status; }
+    public void setEntry(Entry entry) { this.entry = entry; }
 }

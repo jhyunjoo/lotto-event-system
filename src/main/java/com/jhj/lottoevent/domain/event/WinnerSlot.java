@@ -26,4 +26,6 @@ public class WinnerSlot {
 
     @Column(name = "reserved_at", nullable = false)
     private LocalDateTime reservedAt = LocalDateTime.now();
+
+    public Byte getRank() { return rank; }
 }

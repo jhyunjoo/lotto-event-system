@@ -43,4 +43,6 @@ public class Entry {
     public void setParticipant(Participant participant) { this.participant = participant; }
     public Integer getEntryNo() { return entryNo; }
     public void setEntryNo(Integer entryNo) { this.entryNo = entryNo; }
+    public void setIssuedLottoNumber(String issuedLottoNumber) { this.issuedLottoNumber = issuedLottoNumber;}
+    public String getIssuedLottoNumber() { return issuedLottoNumber; }
 }

@@ -29,4 +29,10 @@ public class Result {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public void setEvent(Event event) { this.event = event; }
+
+    public void setEntry(Entry entry) {  this.entry = entry; }
+
+    public void setRank(Byte rank) { this.rank = rank;  }
 }
