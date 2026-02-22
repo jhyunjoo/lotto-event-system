@@ -29,4 +29,7 @@ public class ResultView {
     public Long getEntryId() { return entryId; }
     public Entry getEntry() { return entry; }
     public void setEntry(Entry entry) { this.entry = entry; }
+
+    public Integer getViewCount() { return viewCount; }
+    public void setViewCount(Integer viewCount) { this.viewCount = viewCount; }
 }

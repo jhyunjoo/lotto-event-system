@@ -35,4 +35,5 @@ public class Result {
     public void setEntry(Entry entry) {  this.entry = entry; }
 
     public void setRank(Byte rank) { this.rank = rank;  }
+    public Byte getRank() {  return rank;  }
 }
