@@ -1,11 +1,14 @@
 package com.jhj.lottoevent.web;
 
 import com.jhj.lottoevent.repository.EventRepository;
-import com.jhj.lottoevent.repository.SmsLogRepository;
 import com.jhj.lottoevent.service.AuthService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Controller
 @RequestMapping("/auth")
@@ -13,60 +16,59 @@ public class AuthController {
 
     private final EventRepository eventRepository;
     private final AuthService authService;
-    private final SmsLogRepository smsLogRepository;
 
-    public AuthController(EventRepository eventRepository,
-                          AuthService authService,
-                          SmsLogRepository smsLogRepository) {
+    public AuthController(EventRepository eventRepository, AuthService authService) {
         this.eventRepository = eventRepository;
         this.authService = authService;
-        this.smsLogRepository = smsLogRepository;
     }
 
     @GetMapping
-    public String authPage(@RequestParam(required = false) String phone,
-                           Model model) {
-
+    public String authPage(@RequestParam(required = false) String phone, Model model) {
         Long eventId = eventRepository.findAll().stream().findFirst()
                 .orElseThrow(() -> new IllegalStateException("이벤트 데이터 없음"))
                 .getId();
 
         model.addAttribute("eventId", eventId);
         model.addAttribute("phone", phone);
-
         return "auth_request";
+    }
+
+    @GetMapping("/verify")
+    public String verifyPage(@RequestParam String phone, Model model) {
+        Long eventId = eventRepository.findAll().stream().findFirst()
+                .orElseThrow(() -> new IllegalStateException("이벤트 데이터 없음"))
+                .getId();
+
+        LocalDateTime expiresAt = authService.getExpiresAt(eventId, phone);
+
+        model.addAttribute("eventId", eventId);
+        model.addAttribute("phone", phone);
+        model.addAttribute("expiresAtEpochMs", expiresAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+        return "auth_verify";
     }
 
     @PostMapping("/request")
     public String request(@RequestParam Long eventId,
                           @RequestParam String phone,
-                          Model model) {
+                          RedirectAttributes ra) {
+
         authService.requestCode(eventId, phone);
-
-        // 개발 편의: 최신 인증코드 보여주기(제출용이면 숨겨도 됨)
-        String lastMsg = smsLogRepository.findTop1ByEventIdAndPhoneAndTypeOrderBySentAtDesc(eventId, phone, "VERIFY_CODE")
-                .map(s -> s.getMessage())
-                .orElse("");
-
-        model.addAttribute("eventId", eventId);
-        model.addAttribute("phone", phone);
-        model.addAttribute("debugCodeMsg", lastMsg);
-
-        return "auth_verify";
+        ra.addFlashAttribute("flashSuccess", "인증번호를 발송했습니다. 3분 내에 입력해주세요.");
+        return "redirect:/auth/verify?phone=" + phone;
     }
 
     @PostMapping("/verify")
     public String verify(@RequestParam Long eventId,
                          @RequestParam String phone,
                          @RequestParam String code,
-                         Model model) {
-        authService.verifyCode(eventId, phone, code);
-
-        model.addAttribute("eventId", eventId);
-        model.addAttribute("phone", phone);
-        model.addAttribute("verified", true);
-
-        // 인증 완료 후 참가 페이지로 이동 링크
-        return "auth_verified";
+                         RedirectAttributes ra) {
+        try {
+            authService.verifyCode(eventId, phone, code);
+            ra.addFlashAttribute("flashSuccess", "인증이 완료되었습니다. 참가를 진행해주세요.");
+            return "redirect:/event/join";
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("flashError", e.getMessage());
+            return "redirect:/auth/verify?phone=" + phone;
+        }
     }
 }

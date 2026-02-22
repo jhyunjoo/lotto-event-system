@@ -1,23 +1,67 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>인증번호 입력</title>
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::main}, '인증번호 입력')">
 <body>
-<h2>인증번호 입력</h2>
 
-<p th:text="'휴대폰: ' + ${phone}"></p>
+<main class="container">
+    <div class="card">
+        <h1 class="title">인증번호 입력</h1>
 
-<!-- 개발 편의용(제출 직전 숨길 수도 있음) -->
-<p th:if="${debugCodeMsg != null}" th:text="'[DEBUG] ' + ${debugCodeMsg}"></p>
+        <div th:if="${flashSuccess}" class="alert success" th:text="${flashSuccess}"></div>
+        <div th:if="${flashError}" class="alert error" th:text="${flashError}"></div>
 
-<form th:action="@{/auth/verify}" method="post">
-    <input type="hidden" name="eventId" th:value="${eventId}"/>
-    <input type="hidden" name="phone" th:value="${phone}"/>
-    <input type="text" name="code" placeholder="6자리 인증번호" required/>
-    <button type="submit">인증하기</button>
-</form>
+        <p class="desc">
+            휴대폰: <b th:text="${phone}"></b>
+        </p>
+
+        <!-- expiresAt이 없으면(요청 안 하고 바로 접근) 안내 -->
+        <div th:if="${expiresAt == null}" class="alert error">
+            인증번호 요청 후 진행해주세요.
+        </div>
+
+        <div th:if="${expiresAt != null}" class="timer">
+            남은 시간: <span id="remain">03:00</span>
+        </div>
+
+        <form th:action="@{/auth/verify}" method="post">
+            <input type="hidden" name="eventId" th:value="${eventId}"/>
+            <input type="hidden" name="phone" th:value="${phone}"/>
+
+            <div class="row">
+                <div class="field">
+                    <label>인증번호</label>
+                    <input type="text" name="code" placeholder="6자리 인증번호" required/>
+                    <div class="hint">유효시간 3분</div>
+                </div>
+                <div class="field" style="display:flex; align-items:flex-end;">
+                    <button class="btn" type="submit">인증하기</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="divider"></div>
+        <a class="btn secondary" th:href="@{/auth(phone=${phone})}">인증번호 다시 요청</a>
+    </div>
+</main>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const expiresAtMs = /*[[${expiresAtEpochMs}]]*/ 0;
+    const remainEl = document.getElementById("remain");
+
+    if (expiresAtMs && remainEl) {
+      const tick = () => {
+        const diffMs = Math.max(0, expiresAtMs - Date.now());
+        const totalSec = Math.floor(diffMs / 1000);
+        const m = String(Math.floor(totalSec / 60)).padStart(2,'0');
+        const s = String(totalSec % 60).padStart(2,'0');
+        remainEl.textContent = `${m}:${s}`;
+      };
+      tick();
+      setInterval(tick, 1000);
+    }
+    /*]]>*/
+</script>
 
 </body>
 </html>

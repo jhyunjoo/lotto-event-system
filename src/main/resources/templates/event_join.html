@@ -1,18 +1,33 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>로또 이벤트 참가</title>
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::main}, '로또 이벤트 참가')">
 <body>
-<h2>로또 이벤트 참가</h2>
-<p>휴대폰 번호를 입력해주세요. (예: 010-0000-0000)</p>
+<main class="container">
+    <div class="card">
+        <h1 class="title">로또 이벤트 참가</h1>
+        <p class="desc">휴대폰 번호를 입력하고 인증 후 참가할 수 있어요.</p>
 
-<form th:action="@{/event/join}" method="post">
-    <input type="hidden" name="eventId" th:value="${eventId}"/>
-    <input type="text" name="phone" placeholder="010-0000-0000" required/>
-    <button type="submit">참가하기</button>
-</form>
+        <form th:action="@{/event/join}" method="post">
+            <input type="hidden" name="eventId" th:value="${eventId}"/>
 
+            <div class="row">
+                <div class="field">
+                    <label>휴대폰 번호</label>
+                    <input name="phone" placeholder="010-0000-0000" required/>
+                    <div class="hint">형식: 010-0000-0000</div>
+                </div>
+                <div class="field" style="display:flex; align-items:flex-end;">
+                    <button class="btn" type="submit">참가하기</button>
+                </div>
+            </div>
+
+            <div th:if="${errorMsg}" class="alert error" th:text="${errorMsg}"></div>
+            <div th:if="${successMsg}" class="alert success" th:text="${successMsg}"></div>
+        </form>
+
+        <div class="divider"></div>
+        <p class="desc" style="margin:0;">이미 인증하셨나요? 결과 확인은 상단 메뉴에서 가능합니다.</p>
+    </div>
+</main>
 </body>
 </html>

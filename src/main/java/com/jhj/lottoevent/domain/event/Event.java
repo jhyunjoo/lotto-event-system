@@ -57,6 +57,7 @@ public class Event {
     public LocalDateTime getAnnounceEndAt() { return announceEndAt; }
 
     public void setWinningNumber(String winningNumber) { this.winningNumber = winningNumber;  }
+    public String getWinningNumber() {  return winningNumber;   }
 
     public void setFixedFirstPhone(String fixedFirstPhone) { this.fixedFirstPhone = fixedFirstPhone; }
     public String getFixedFirstPhone() { return fixedFirstPhone; }

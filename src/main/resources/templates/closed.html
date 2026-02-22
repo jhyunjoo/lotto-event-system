@@ -1,11 +1,16 @@
 <!doctype html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>이벤트 종료</title>
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::main}, '이벤트 종료')">
 <body>
-<h2>현재 이벤트 기간이 아닙니다.</h2>
-<p>이벤트 기간 또는 발표 기간에 다시 접속해주세요.</p>
+
+<main class="container">
+    <div class="card">
+        <h1 class="title">현재 이벤트 기간이 아닙니다</h1>
+        <p class="desc">이벤트 기간 또는 발표 기간에 다시 접속해주세요.</p>
+
+        <a class="btn secondary" th:href="@{/event/join}">참가 페이지</a>
+    </div>
+</main>
+
 </body>
 </html>

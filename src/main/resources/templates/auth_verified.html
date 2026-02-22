@@ -1,13 +1,18 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>인증 완료</title>
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::main}, '인증 완료')">
 <body>
-<h2>인증 완료</h2>
-<p th:text="'휴대폰 ' + ${phone} + ' 인증이 완료되었습니다.'"></p>
 
-<a href="/event/join">참가 페이지로 이동</a>
+<main class="container">
+    <div class="card">
+        <h1 class="title">인증 완료</h1>
+        <p class="desc" th:text="'휴대폰 ' + ${phone} + ' 인증이 완료되었습니다.'"></p>
+
+        <div class="row">
+            <a class="btn" th:href="@{/event/join}">참가 페이지로 이동</a>
+        </div>
+    </div>
+</main>
+
 </body>
 </html>

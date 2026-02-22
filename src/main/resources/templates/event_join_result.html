@@ -1,16 +1,40 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>참가 완료</title>
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::main}, '참가 완료')">
 <body>
-<h2>참가 완료</h2>
 
-<p th:text="'휴대폰: ' + ${phone}"></p>
-<p th:text="'참가번호(entry_no): ' + ${entryNo}"></p>
-<p th:text="'발급 로또번호: ' + ${lottoNumber}"></p>
+<main class="container">
+    <div class="card">
+        <h1 class="title">참가 완료</h1>
+        <p class="desc">
+            번호가 발급되었습니다.
+            <span class="badge" th:text="'참가번호 #' + ${entryNo}">참가번호 #1</span>
+        </p>
 
-<a href="/">처음으로</a>
+        <div class="divider"></div>
+
+        <p class="desc" style="margin-bottom:10px;">발급 로또 번호</p>
+
+        <div class="balls">
+      <span th:each="i : ${#numbers.sequence(0,5)}"
+            class="ball"
+            th:classappend="' ball-pos-' + (${i}+1)"
+            th:text="${#strings.substring(lottoNumber, i, i+1)}">
+      </span>
+        </div>
+
+        <div class="hint" style="margin-top:12px;">
+            안내 문자는 실제 발송 대신 <b>sms_log</b>에 기록됩니다.
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+            <a class="btn secondary" th:href="@{/event/join}">다른 번호로 참가</a>
+            <a class="btn" th:href="@{/result/check}">결과 확인</a>
+        </div>
+    </div>
+</main>
+
 </body>
 </html>

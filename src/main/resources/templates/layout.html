@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(content, pageTitle)">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${pageTitle} ?: '모바일팩토리 로또 이벤트'">모바일팩토리 로또 이벤트</title>
+
+    <style>
+        :root{
+          --bg:#f6f7fb;
+          --card:#ffffff;
+          --text:#111827;
+          --muted:#6b7280;
+          --line:#e5e7eb;
+          --brand:#0f766e;
+          --brand-dark:#0b5e58;
+        }
+        *{box-sizing:border-box}
+        body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Arial,sans-serif;color:var(--text);background:var(--bg);}
+        a{color:inherit;text-decoration:none}
+        .container{max-width:980px;margin:0 auto;padding:24px 16px;}
+        .header{background:#fff;border-bottom:1px solid var(--line);}
+        .header-inner{max-width:980px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+        .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-0.2px;}
+        .brand-badge{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#22c55e);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;box-shadow:0 6px 16px rgba(15,118,110,0.18);}
+        .nav{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px;}
+        .nav a{padding:6px 10px;border-radius:10px;}
+        .nav a:hover{background:rgba(15,118,110,0.08);color:var(--brand);}
+        .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 10px 22px rgba(17,24,39,0.06);}
+        .title{font-size:22px;font-weight:800;margin:0 0 8px;}
+        .desc{margin:0 0 18px;color:var(--muted);line-height:1.6}
+        .row{display:flex;gap:12px;flex-wrap:wrap;}
+        .field{flex:1;min-width:220px;}
+        label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px;}
+        input{width:100%;padding:12px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px;outline:none;background:#fff;}
+        input:focus{border-color:rgba(15,118,110,0.55);box-shadow:0 0 0 4px rgba(15,118,110,0.12);}
+        .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 14px;border-radius:12px;border:1px solid transparent;background:var(--brand);color:#fff;font-weight:700;cursor:pointer;transition:0.15s ease;min-width:120px;}
+        .btn:hover{background:var(--brand-dark)}
+        .btn.secondary{background:#fff;color:var(--brand);border-color:rgba(15,118,110,0.35);}
+        .btn.secondary:hover{background:rgba(15,118,110,0.06)}
+        .hint{font-size:13px;color:var(--muted);margin-top:8px;}
+        .divider{height:1px;background:var(--line);margin:18px 0;}
+        .footer{color:var(--muted);font-size:12px;text-align:center;padding:30px 16px;}
+
+        /* 번호 공 */
+        .balls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 0;}
+        .ball{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;box-shadow:0 10px 18px rgba(0,0,0,0.12);position:relative;user-select:none;}
+        .ball::after{content:"";position:absolute;top:8px;left:10px;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.55);filter:blur(0.2px);}
+        .ball-pos-1{background:#e53935;}
+        .ball-pos-2{background:#fb8c00;}
+        .ball-pos-3{background:#fdd835;color:#222;}
+        .ball-pos-4{background:#43a047;}
+        .ball-pos-5{background:#1e88e5;}
+        .ball-pos-6{background:#8e24aa;}
+
+        .alert{border-radius:14px;padding:12px 14px;border:1px solid var(--line);background:#fff;margin:12px 0 0;font-size:14px;}
+        .alert.error{border-color:rgba(239,68,68,0.35);background:rgba(239,68,68,0.06);}
+        .alert.success{border-color:rgba(34,197,94,0.35);background:rgba(34,197,94,0.08);}
+    </style>
+</head>
+
+<body>
+<header class="header">
+    <div class="header-inner">
+        <a class="brand" th:href="@{/event/join}">
+            <span class="brand-badge">L</span>
+            <span>모바일팩토리 로또 이벤트</span>
+        </a>
+        <nav class="nav">
+            <a th:href="@{/event/join}">참가</a>
+            <a th:href="@{/result/check}">결과확인</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container" th:replace="${content}"></main>
+
+<footer class="footer">
+    © MobileFactory Lotto Event System
+</footer>
+</body>
+</html>

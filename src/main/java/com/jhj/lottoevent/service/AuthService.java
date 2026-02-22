@@ -9,8 +9,8 @@ import com.jhj.lottoevent.repository.SmsLogRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class AuthService {
@@ -18,8 +18,6 @@ public class AuthService {
     private final EventRepository eventRepository;
     private final ParticipantRepository participantRepository;
     private final SmsLogRepository smsLogRepository;
-
-    private final SecureRandom random = new SecureRandom();
 
     public AuthService(EventRepository eventRepository,
                        ParticipantRepository participantRepository,
@@ -30,52 +28,68 @@ public class AuthService {
     }
 
     @Transactional
-    public void requestCode(Long eventId, String phone) {
+    public LocalDateTime requestCode(Long eventId, String phone) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("이벤트 없음"));
 
-        // 참가자 레코드 없으면 생성
-        Participant participant = participantRepository.findByEventIdAndPhone(eventId, phone)
+        Participant p = participantRepository.findByEventIdAndPhone(eventId, phone)
                 .orElseGet(() -> {
-                    Participant p = new Participant();
-                    p.setEvent(event);
-                    p.setPhone(phone);
-                    return participantRepository.save(p);
+                    Participant np = new Participant();
+                    np.setEvent(event);
+                    np.setPhone(phone);
+                    return participantRepository.save(np);
                 });
 
-        String code = generate6DigitCode();
+        String code = generate6Digit();
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(3);
 
+        p.setVerifyCode(code);
+        p.setVerifyExpiresAt(expiresAt);
+
+        // 실제 SMS 대신 로그
         SmsLog sms = new SmsLog();
         sms.setEvent(event);
         sms.setPhone(phone);
         sms.setType("VERIFY_CODE");
         sms.setMessage("인증번호: " + code);
         sms.setStatus("SUCCESS");
-        sms.setEntry(null);
         smsLogRepository.save(sms);
+
+        return expiresAt;
     }
 
     @Transactional
     public void verifyCode(Long eventId, String phone, String code) {
-        SmsLog last = smsLogRepository
-                .findTop1ByEventIdAndPhoneAndTypeOrderBySentAtDesc(eventId, phone, "VERIFY_CODE")
+        Participant p = participantRepository.findByEventIdAndPhone(eventId, phone)
                 .orElseThrow(() -> new IllegalArgumentException("인증 요청 이력이 없습니다."));
 
-        // message가 "인증번호: 123456" 형태라서 code 추출
-        String issued = last.getMessage().replace("인증번호: ", "").trim();
-        if (!issued.equals(code)) {
+        if (p.getVerifyCode() == null || p.getVerifyExpiresAt() == null) {
+            throw new IllegalArgumentException("인증번호를 먼저 요청해주세요.");
+        }
+
+        if (LocalDateTime.now().isAfter(p.getVerifyExpiresAt())) {
+            throw new IllegalArgumentException("인증번호가 만료되었습니다. 다시 요청해주세요.");
+        }
+
+        if (!p.getVerifyCode().equals(code)) {
             throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
         }
 
-        Participant participant = participantRepository.findByEventIdAndPhone(eventId, phone)
-                .orElseThrow(() -> new IllegalStateException("참가자 없음"));
+        p.setVerifiedAt(LocalDateTime.now());
+        p.setVerifyCode(null);
+        p.setVerifyExpiresAt(null);
 
-        participant.setVerifiedAt(LocalDateTime.now());
-        participantRepository.save(participant);
     }
 
-    private String generate6DigitCode() {
-        int n = random.nextInt(1_000_000);
+    @Transactional(readOnly = true)
+    public LocalDateTime getExpiresAt(Long eventId, String phone) {
+        return participantRepository.findByEventIdAndPhone(eventId, phone)
+                .map(Participant::getVerifyExpiresAt)
+                .orElse(null);
+    }
+
+    private String generate6Digit() {
+        int n = ThreadLocalRandom.current().nextInt(0, 1_000_000);
         return String.format("%06d", n);
     }
 }

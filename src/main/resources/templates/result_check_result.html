@@ -1,14 +1,22 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>결과</title>
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::main}, '결과')">
 <body>
 
-<h2 th:text="${message}"></h2>
+<main class="container">
+    <div class="card">
+        <h1 class="title">결과</h1>
 
-<a href="/">처음으로</a>
+        <div class="alert success" th:text="${message}"></div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+            <a class="btn secondary" th:href="@{/result/check}">다시 확인</a>
+            <a class="btn" th:href="@{/event/join}">참가</a>
+        </div>
+    </div>
+</main>
 
 </body>
 </html>
