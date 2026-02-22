@@ -41,11 +41,21 @@ public class Event {
     // getters/setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public void setName(String name) { this.name = name; }
+
     public void setEventStartAt(LocalDateTime eventStartAt) { this.eventStartAt = eventStartAt;}
+    public LocalDateTime getEventStartAt() {  return eventStartAt; }
+
     public void setEventEndAt(LocalDateTime eventEndAt) { this.eventEndAt = eventEndAt; }
+    public LocalDateTime getEventEndAt() {   return eventEndAt; }
+
     public void setAnnounceStartAt(LocalDateTime announceStartAt) { this.announceStartAt = announceStartAt;}
+    public LocalDateTime getAnnounceStartAt() { return announceStartAt;  }
+
     public void setAnnounceEndAt(LocalDateTime announceEndAt) { this.announceEndAt = announceEndAt;}
+    public LocalDateTime getAnnounceEndAt() { return announceEndAt; }
+
     public void setWinningNumber(String winningNumber) { this.winningNumber = winningNumber;  }
     public void setFixedFirstPhone(String fixedFirstPhone) { this.fixedFirstPhone = fixedFirstPhone; }
     public void setMaxParticipants(Integer maxParticipants) {   this.maxParticipants = maxParticipants; }

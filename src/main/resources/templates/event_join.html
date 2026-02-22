@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로또 이벤트 참가</title>
+</head>
+<body>
+<h2>로또 이벤트 참가</h2>
+<p>휴대폰 번호를 입력해주세요. (예: 010-0000-0000)</p>
+
+<form th:action="@{/event/join}" method="post">
+    <input type="hidden" name="eventId" th:value="${eventId}"/>
+    <input type="text" name="phone" placeholder="010-0000-0000" required/>
+    <button type="submit">참가하기</button>
+</form>
+
+</body>
+</html>
