@@ -1,7 +1,9 @@
 package com.jhj.lottoevent.web;
 
 import com.jhj.lottoevent.domain.entry.Entry;
+import com.jhj.lottoevent.domain.participant.Participant;
 import com.jhj.lottoevent.repository.EventRepository;
+import com.jhj.lottoevent.repository.ParticipantRepository;
 import com.jhj.lottoevent.service.EntryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +15,12 @@ public class EntryController {
 
     private final EntryService entryService;
     private final EventRepository eventRepository;
+    private final ParticipantRepository participantRepository;
 
-    public EntryController(EntryService entryService, EventRepository eventRepository) {
+    public EntryController(EntryService entryService, EventRepository eventRepository, ParticipantRepository participantRepository) {
         this.entryService = entryService;
         this.eventRepository = eventRepository;
+        this.participantRepository = participantRepository;
     }
 
     @GetMapping("/join")
@@ -33,12 +37,18 @@ public class EntryController {
     public String join(@RequestParam Long eventId,
                        @RequestParam String phone,
                        Model model) {
-        Entry entry = entryService.join(eventId, phone);
 
-        model.addAttribute("entryNo", entry.getEntryNo());
-        model.addAttribute("lottoNumber", entry.getIssuedLottoNumber());
-        model.addAttribute("phone", phone);
+        try {
+            Entry entry = entryService.join(eventId, phone);
 
-        return "event_join_result";
+            model.addAttribute("entryNo", entry.getEntryNo());
+            model.addAttribute("lottoNumber", entry.getIssuedLottoNumber());
+            model.addAttribute("phone", phone);
+
+            return "event_join_result";
+
+        } catch (IllegalStateException e) {
+            return "redirect:/auth?phone=" + phone;
+        }
     }
 }

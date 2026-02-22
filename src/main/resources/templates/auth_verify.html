@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>인증번호 입력</title>
+</head>
+<body>
+<h2>인증번호 입력</h2>
+
+<p th:text="'휴대폰: ' + ${phone}"></p>
+
+<!-- 개발 편의용(제출 직전 숨길 수도 있음) -->
+<p th:if="${debugCodeMsg != null}" th:text="'[DEBUG] ' + ${debugCodeMsg}"></p>
+
+<form th:action="@{/auth/verify}" method="post">
+    <input type="hidden" name="eventId" th:value="${eventId}"/>
+    <input type="hidden" name="phone" th:value="${phone}"/>
+    <input type="text" name="code" placeholder="6자리 인증번호" required/>
+    <button type="submit">인증하기</button>
+</form>
+
+</body>
+</html>

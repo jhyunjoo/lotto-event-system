@@ -10,4 +10,5 @@ public interface ResultViewRepository extends JpaRepository<ResultView, Long> {
 
     @Query("select rv.entryId from ResultView rv where rv.viewCount = 0")
     List<Long> findUncheckedEntryIds();
+
 }

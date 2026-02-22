@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>휴대폰 인증</title>
+</head>
+<body>
+<h2>휴대폰 인증</h2>
+
+<form th:action="@{/auth/request}" method="post">
+    <input type="hidden" name="eventId" th:value="${eventId}"/>
+    <input type="text" name="phone"
+           placeholder="010-0000-0000"
+           th:value="${phone}"
+           required/>
+    <button type="submit">인증번호 요청</button>
+</form>
+
+</body>
+</html>

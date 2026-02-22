@@ -31,6 +31,10 @@ public class Participant {
     public Long getId() { return id; }
     public Event getEvent() { return event; }
     public void setEvent(Event event) { this.event = event; }
+
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
+
+    public void setVerifiedAt(LocalDateTime verifiedAt) {  this.verifiedAt = verifiedAt; }
+    public LocalDateTime getVerifiedAt() {  return verifiedAt; }
 }

@@ -57,6 +57,10 @@ public class ReminderScheduler {
         for (Entry e : entries) {
             String phone = e.getParticipant().getPhone();
 
+            if (smsLogRepository.existsByEventIdAndEntry_IdAndType(event.getId(), e.getId(), "REMIND_UNCHECKED")) {
+                continue;
+            }
+
             SmsLog sms = new SmsLog();
             sms.setEvent(event);
             sms.setPhone(phone);

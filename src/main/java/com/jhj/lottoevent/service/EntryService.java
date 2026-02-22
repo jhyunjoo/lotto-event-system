@@ -57,6 +57,10 @@ public class EntryService {
                     return participantRepository.save(p);
                 });
 
+        if (participant.getVerifiedAt() == null) {
+            throw new IllegalStateException("휴대폰 인증이 필요합니다.");
+        }
+
         EventSequence sequence = sequenceRepository.findForUpdate(eventId)
                 .orElseThrow(() -> new IllegalStateException("시퀀스 없음"));
 
