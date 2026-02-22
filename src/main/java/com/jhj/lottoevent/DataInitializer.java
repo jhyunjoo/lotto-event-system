@@ -4,6 +4,7 @@ import com.jhj.lottoevent.domain.event.Event;
 import com.jhj.lottoevent.domain.event.EventSequence;
 import com.jhj.lottoevent.repository.EventRepository;
 import com.jhj.lottoevent.repository.EventSequenceRepository;
+import com.jhj.lottoevent.service.SlotGeneratorService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,17 +16,20 @@ public class DataInitializer implements CommandLineRunner {
 
     private final EventRepository eventRepository;
     private final EventSequenceRepository eventSequenceRepository;
+    private final SlotGeneratorService slotGeneratorService;
 
-    public DataInitializer(EventRepository eventRepository, EventSequenceRepository eventSequenceRepository) {
+    public DataInitializer(EventRepository eventRepository,
+                           EventSequenceRepository eventSequenceRepository,
+                           SlotGeneratorService slotGeneratorService) {
         this.eventRepository = eventRepository;
         this.eventSequenceRepository = eventSequenceRepository;
+        this.slotGeneratorService = slotGeneratorService;
     }
 
     @Override
     @Transactional
     public void run(String... args) {
 
-        // 1) 이벤트가 없으면 생성
         Event event = eventRepository.findAll().stream().findFirst().orElse(null);
 
         if (event == null) {
@@ -42,12 +46,14 @@ public class DataInitializer implements CommandLineRunner {
             event = eventRepository.save(e);
         }
 
-        // 2) event_sequence가 없으면 생성 (@MapsId)
         if (eventSequenceRepository.findById(event.getId()).isEmpty()) {
             EventSequence seq = new EventSequence();
             seq.setEvent(event);
             seq.setNextEntryNo(1);
             eventSequenceRepository.save(seq);
         }
+
+        // winner_slot 없으면 생성 (SlotGeneratorService 내부에서 중복 방지)
+        slotGeneratorService.generateSlots(event.getId());
     }
 }

@@ -7,5 +7,8 @@ import java.util.Optional;
 
 public interface WinnerSlotRepository extends JpaRepository<WinnerSlot, Long> {
 
+    long countByEventId(Long eventId);
+    long countByEventIdAndRank(Long eventId, Byte rank);
+
     Optional<WinnerSlot> findByEventIdAndEntryNo(Long eventId, Integer entryNo);
 }

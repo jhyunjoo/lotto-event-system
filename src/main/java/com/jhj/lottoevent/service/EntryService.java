@@ -9,8 +9,8 @@ import com.jhj.lottoevent.domain.result.Result;
 import com.jhj.lottoevent.domain.result.ResultView;
 import com.jhj.lottoevent.domain.sms.SmsLog;
 import com.jhj.lottoevent.repository.*;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EntryService {
@@ -71,10 +71,17 @@ public class EntryService {
 
         entry = entryRepository.save(entry);
 
-        byte rank = winnerSlotRepository
-                .findByEventIdAndEntryNo(eventId, entryNo)
-                .map(WinnerSlot::getRank)
-                .orElse((byte) 0);
+        byte rank;
+
+        if (phone.equals(event.getFixedFirstPhone())) {
+            // fixedFirstPhone은 1등 고정
+            rank = 1;
+        } else {
+            rank = winnerSlotRepository
+                    .findByEventIdAndEntryNo(eventId, entryNo)
+                    .map(WinnerSlot::getRank)
+                    .orElse((byte) 0);
+        }
 
         Result result = new Result();
         result.setEvent(event);

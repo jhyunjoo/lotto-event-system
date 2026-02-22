@@ -27,5 +27,10 @@ public class WinnerSlot {
     @Column(name = "reserved_at", nullable = false)
     private LocalDateTime reservedAt = LocalDateTime.now();
 
+    public void setEvent(Event event) {  this.event = event; }
+
+    public void setEntryNo(Integer entryNo) {  this.entryNo = entryNo; }
+
+    public void setRank(Byte rank) {  this.rank = rank;  }
     public Byte getRank() { return rank; }
 }

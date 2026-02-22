@@ -57,6 +57,10 @@ public class Event {
     public LocalDateTime getAnnounceEndAt() { return announceEndAt; }
 
     public void setWinningNumber(String winningNumber) { this.winningNumber = winningNumber;  }
+
     public void setFixedFirstPhone(String fixedFirstPhone) { this.fixedFirstPhone = fixedFirstPhone; }
+    public String getFixedFirstPhone() { return fixedFirstPhone; }
+
     public void setMaxParticipants(Integer maxParticipants) {   this.maxParticipants = maxParticipants; }
+    public Integer getMaxParticipants() { return maxParticipants; }
 }
